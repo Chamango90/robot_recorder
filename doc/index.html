@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+        <title>Play Recorded Robot</title>
+
+        <script src="https://threejs.org/build/three.min.js"></script>
+        <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+        <script src="https://threejs.org/examples/js/loaders/STLLoader.js"></script>
+        <script src="https://threejs.org/examples/js/loaders/ColladaLoader.js"></script>
+        <script src="https://rawgit.com/webcomponents/webcomponentsjs/v1.1.0/webcomponents-lite.js"></script>
+        <script src="https://rawgit.com/ipa-jfh/urdf-loaders/external_urdf/javascript/URDFLoader.js"></script>
+        <script src="https://rawgit.com/gkjohnson/urdf-loaders/master/javascript/urdf-viewer-element.js"></script>
+        <script src="../js/RobotRecordLoader.js"></script>
+
+        <script>customElements.define('urdf-viewer', URDFViewer)</script>
+        <style type="text/css"> html, body, urdf-viewer {height: 100%; width: 100%; overflow: hidden;} </style>
+    </head>
+
+    <body>
+        <urdf-viewer 
+            id="viewer" up="-Z" display-shadow 
+            package="https://raw.githubusercontent.com/ros-industrial/universal_robot/kinetic-devel" 
+            urdf="./urdf/ur5.urdf">
+    </urdf-viewer>
+
+        <script>
+            const vw = document.querySelector('urdf-viewer')
+            var clock, mixer
+
+            document.addEventListener('WebComponentsReady', () => {
+
+                clock = new THREE.Clock();
+                mixer = new THREE.AnimationMixer( vw.world )
+                vw.camera.fov = 10;
+                vw.camera.position.y = 10
+                vw.refresh()
+                
+                vw.addEventListener('geometry-loaded', e => {
+                    loadRobotRecord({
+                        clock: clock,
+                        mixer: mixer,
+                        recorded_file: './recordings/test_move.json', 
+                        control_gui: true, // default = false
+                        fading: 3.0, // default = 0.5
+                    })
+                    animate();
+                })
+            })
+
+
+            function animate() {
+                mixer.update(clock.getDelta() );
+                vw._dirty = true; // trigger update of urdf-viewer-element
+                requestAnimationFrame(animate)
+            }        
+        </script>
+
+    </body>
+</html>
