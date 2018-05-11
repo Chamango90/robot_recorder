@@ -1,4 +1,4 @@
-# robot_recorder
+# Robot Recorder: Offline ROS -> three.js
 
 This package can be used to record the joints and/or the mobile changes of a ROS system as three.js animation.
 The result can e.g. be display in gh-pages. Find an example here: https://ipa-jfh.github.io/robot_recorder/
