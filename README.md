@@ -28,7 +28,7 @@ In order to reduce the recorded data it does not apply a fixed rate but keyframe
   
 ## Which output-format is used?
 
-The recorded robot movements are saved as animation of the `JSON Object format` ([three.js example][1]) which can be utilized by the three.js [animation system][2].
+The recorded robot movements are saved as animation of the `JSON Object format` ([three.js example][4]) which can be utilized by the three.js [animation system][5].
 
 ## How is the URDF visualized?
 
