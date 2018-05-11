@@ -30,8 +30,8 @@ class Recorder(object):
             rospy.on_shutdown(self.export_to_file)
         else:
             self.active = False
-            rospy.Service('robot_recorder/start', Empty, self.start)
-            rospy.Service('robot_recorder/stop', Empty, self.export_to_file)
+            rospy.Service('~start', Empty, self.start)
+            rospy.Service('~stop', Empty, self.export_to_file)
 
         self.start_t = self.last_js_t = self.last_tf_t = None
         self.tracks = {}
