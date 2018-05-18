@@ -14,7 +14,7 @@ In order to reduce the recorded data it does not apply a fixed rate but keyframe
 
 ## How to use?
 
-1. "Automatic mode": By default the launch file records as soon as it is started and saves data as soon as it is closed. 
+1. "Automatic mode": By default the node records as soon as it is started and saves data as soon as it is closed. 
 
 1. "Manual mode": Use the ROS services `~start` and `~stop`.
 
