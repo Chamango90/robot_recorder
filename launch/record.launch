@@ -1,8 +1,8 @@
 <launch>
 
-  <arg name="output_file"    default="$(find robot_recorder)/doc/recordings/test_move.json"/>
-  <arg name="throttle_value" default="0.1" />
-  <arg name="throttle_hz"    default="3" />
+  <arg name="output_file"    default="$(find robot_recorder)/docs/recordings/test_move.json"/>
+  <arg name="throttle_value" default="0.05" />
+  <arg name="throttle_hz"    default="10" />
 
   <node pkg="topic_tools" type="throttle" name="throttle_joints_by_rate" args="messages joint_states $(arg throttle_hz)"/>
 
