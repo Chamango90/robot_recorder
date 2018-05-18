@@ -81,7 +81,7 @@ class Recorder(object):
             now = data.header.stamp.to_sec()
 
             #INIT
-            if not self.last_js_t:
+            if self.last_js_t is None:
                 rospy.loginfo("Recording joint states from %s", data.name)
                 if not self.start_t: self.start_t = now
                 self.__load_joint_map()
