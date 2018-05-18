@@ -3,6 +3,8 @@
 This package can be used to record the joints and/or the mobile changes of a ROS system as three.js animation.
 The result can e.g. be display in gh-pages. Find an example here: https://ipa-jfh.github.io/robot_recorder/
 
+[![record_1](https://user-images.githubusercontent.com/17281534/40248316-d6fe0c0a-5acf-11e8-9d53-72547f7f4cf2.gif)](https://ipa-jfh.github.io/robot_recorder/)
+
 In order to reduce the recorded data it does not apply a fixed rate but keyframes. Furthermore, it will not start before the first movement has occured.
 
 ### Usecases
