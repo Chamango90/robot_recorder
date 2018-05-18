@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-        <title>Play Recorded Robot</title>
+        <title>Record Recorded Robot to GIF</title>
 
         <script src="https://threejs.org/build/three.min.js"></script>
         <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
@@ -15,44 +15,54 @@
         <script src="https://rawgit.com/gkjohnson/urdf-loaders/master/javascript/urdf-viewer-element.js"></script>
         <script src="./js/RobotRecordLoader.js"></script>
 
+        <script src="https://rawgit.com/jnordberg/gif.js/v0.2.0/dist/gif.js"></script>
+
         <script>customElements.define('urdf-viewer', URDFViewer)</script>
-        <style type="text/css"> html, body, urdf-viewer {height: 100%; width: 100%; overflow: hidden;} </style>
+        <style type="text/css"> html, body, urdf-viewer {background-color: LightGrey; height: 600px; width: 860px; overflow: hidden;} </style>
     </head>
 
     <body>
         <urdf-viewer 
             id="viewer" up="-Z" display-shadow 
             package="https://raw.githubusercontent.com/ros-industrial/universal_robot/kinetic-devel" 
-            urdf="./urdf/ur5.urdf">
-    </urdf-viewer>
+            urdf="https://rawgit.com/ipa-jfh/robot_recorder/master/docs/urdf/ur5.urdf"> 
+        </urdf-viewer>
 
         <script>
-            const vw = document.querySelector('urdf-viewer')
             const animation_file = "./recordings/test_move.json"
-            var record
+            const workerScript = "https://rawgit.com/jnordberg/gif.js/v0.2.0/dist/gif.worker.js"
+            const vw = document.querySelector('urdf-viewer')
+            var record   
 
             document.addEventListener('WebComponentsReady', () => {
-
-                vw.camera.fov = 10;
+                
+                // Update camera
+                vw.camera.fov = 6;
                 vw.camera.position.y = 10
+                vw.renderer.setClearColor(0xffffff); //white bg for recorded gif
                 vw.refresh()
                 
                 vw.addEventListener('geometry-loaded', e => {
-
+            
                     new THREE.FileLoader().load( animation_file, function ( animation ) {
 
                         // Load recordet robot motion into a Three.js clipAction
-                        record = new LoadRobotRecord({
-                            animation: animation,
-                            fading: 3.0, // default = 0.5
+                        record = new LoadRobotRecord({ 
+                            animation: animation, 
+                            fading: 0.0, // default = 0.5
+                            delay: 0.0, // default = 0.5
+
                         })
                         // Record animation into a GIF
-                        record.play({
-                            control_gui: true, // default = false
+                        record.toGIF({
+                            canvas: document.getElementsByTagName("canvas")[0],
+                            workers: 2,
+                            workerScript: workerScript,
+                            quality: 6, //[1, 10] lower is better
+                            auto: false,
                         })
 
-                        animate();
-
+                        animate() 
                     })
                 })
             })
@@ -61,7 +71,8 @@
             function animate() {
                 requestAnimationFrame(animate)
                 record.updateAnimationClip()
-                vw._dirty = true; // trigger update of urdf-viewer-element
+                vw._dirty = true; // trigger update of urdf-viewer
+                if (record.recording) record.addFrameToGIF()              
             }        
         </script>
 
