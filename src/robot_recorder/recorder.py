@@ -107,8 +107,8 @@ class Recorder(object):
                 root = tf.child_frame_id[1:] # default: base_link
 
                 #INIT
-                if not self.last_tf_t:
-                    rospy.INFO("Recording tf from %s to %s", tf.header.frame_id, root)
+                if self.last_tf_t is None:
+                    rospy.loginfo("Recording tf from %s to %s", tf.header.frame_id, root)
                     if not self.start_t: self.start_t = now
                     for ty in self.j_types:
                         self.tracks[root+ty] = Track(root, ty)
