@@ -24,6 +24,10 @@ class Recorder(object):
     def __init__(self, freq, output_name, manual = False):
         rospy.Subscriber("joint_states", JointState, self.__joint_states_cb)
         rospy.Subscriber("tf_changes", tfMessage, self.__tf_cb)
+        self.start_t = self.last_js_t = self.last_tf_t = None
+        self.tracks = {}
+        self.dt = 1/float(freq)
+        self.out_name = output_name
 
         if not manual:
             self.active = True
@@ -33,10 +37,6 @@ class Recorder(object):
             rospy.Service('~start', Empty, self.start)
             rospy.Service('~stop', Empty, self.export_to_file)
 
-        self.start_t = self.last_js_t = self.last_tf_t = None
-        self.tracks = {}
-        self.dt = 1/float(freq)
-        self.out_name = output_name
 
     def start(self):
         self.active = True
