@@ -134,10 +134,10 @@ class Track(object):
             self.name = name + ".quaternion"
             self.type = "quaternion"
             if joint:
-                q = tfs.quaternion_from_euler(*joint.origin.rpy)
+                q = tfs.quaternion_from_euler(*(joint.origin.rpy + ['rxyz']))
                 def cb(v):
                     q_dyn = tfs.quaternion_about_axis(v, joint.axis)
-                    self.value = tfs.quaternion_multiply(q_dyn, q).tolist()
+                    self.value = tfs.quaternion_multiply(q, q_dyn).tolist()
         elif j_type == "prismatic":
             self.name = name + ".position"
             self.type = "vector3"
