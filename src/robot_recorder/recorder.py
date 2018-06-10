@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-from __future__ import print_function
-
 import rospy
 from sensor_msgs.msg import JointState
 from tf.msg import tfMessage
@@ -43,9 +41,11 @@ class Recorder(object):
     def start(self):
         if not self.preconfigured: self.__start_subscribers()
         self.active = True
+        rospy.loginfo("Recording started.")
 
     def export_to_file(self):
         self.active = False
+        rospy.loginfo("Recording stopped.")
         duration = max(self.last_tf_t, self.last_js_t)
         if self.tracks:
             _tracks = [t.export() for t in self.tracks.itervalues()]
@@ -54,11 +54,11 @@ class Recorder(object):
             if "." in animation_name: # Remove the extension
                 animation_name = animation_name.rsplit('.',1)[0]
             animation = { "duration": duration, "name": animation_name, "tracks": _tracks}
-            print("\n %s", json.dumps(animation, indent=4, sort_keys=False) )
+            rospy.loginfo("\n %s", json.dumps(animation, indent=4, sort_keys=False) )
             with open(self.out_name, "w") as file:
                 file.write( json.dumps(animation) )
-            print("Saved record to file %s!", self.out_name)
-        else: print("Nothing to record!")
+            rospy.loginfo("Saved record to file %s!", self.out_name)
+        else: rospy.loginfo("Nothing to record!")
 
     def __add_kf_if_pause(self, names, time, last_t):
         if last_t and (time - last_t > 3*self.dt):
@@ -157,7 +157,7 @@ class Track(object):
                 def cb(v):
                     self.value = [(x + y*v) for x, y in zip(orig, joint.axis)]
         else:
-            print("Joint of type %s not supported!", j_type)
+            rospy.loginfo("Joint of type %s not supported!", j_type)
         def pass_value(v): self.value = v
         self.__update = cb if joint else pass_value
         self.keys = []
