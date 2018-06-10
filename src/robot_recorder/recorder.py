@@ -22,23 +22,26 @@ class Recorder(object):
     j_types = ["prismatic", "revolute"]
 
     def __init__(self, freq, output_name, manual = False):
-        rospy.Subscriber("joint_states", JointState, self.__joint_states_cb)
-        rospy.Subscriber("tf_changes", tfMessage, self.__tf_cb)
+        self.active = self.preconfigured = False
         self.start_t = self.last_js_t = self.last_tf_t = None
         self.tracks = {}
         self.dt = 1/float(freq)
         self.out_name = output_name
 
         if not manual:
-            self.active = True
+            self.start()
             rospy.on_shutdown(self.export_to_file)
         else:
-            self.active = False
+            rospy.Service('~preconfigure', Empty, self.preconfigure)
             rospy.Service('~start', Empty, self.start)
             rospy.Service('~stop', Empty, self.export_to_file)
 
+    def preconfigure(self):
+        self.__start_subscribers()
+        self.preconfigured = True
 
     def start(self):
+        if not self.preconfigured: self.__start_subscribers()
         self.active = True
 
     def export_to_file(self):
@@ -62,8 +65,17 @@ class Recorder(object):
             for n in names:
                 self.tracks[n].add_kf(time - self.dt)
 
-    def __load_joint_map(self):
-        self.j_map = URDF.from_parameter_server().joint_map
+    def __start_subscribers(self, key='robot_description'):
+
+        rospy.Subscriber("tf_changes", tfMessage, self.__tf_cb)
+        if rospy.has_param(key):
+            rospy.Subscriber("joint_states", JointState, self.__joint_states_cb)
+            self.j_map = URDF.from_parameter_server(key).joint_map    
+            rospy.loginfo("Loading robot description.")     
+            rospy.sleep(2.)
+        else:
+            rospy.logwarn("No robot description found. Joint states will not be recorded.")
+
 
     def __tf_2_list(self, tf, j_type):
         props = ('x', 'y', 'z')
@@ -84,7 +96,6 @@ class Recorder(object):
             if self.last_js_t is None:
                 rospy.loginfo("Recording joint states from %s", data.name)
                 if not self.start_t: self.start_t = now
-                self.__load_joint_map()
                 for name in data.name:
                     joint = self.j_map[name]
                     self.tracks[name] = Track(name, joint.type, joint)
