@@ -1,11 +1,12 @@
 var LoadRobotRecord = function(data) {
 
     let animation = data.animation
+    this.viewer = data.viewer
     this.t_f = data.fading || 0.5 
     this.t_d = data.delay || 0.5 
 
     this.clock = new THREE.Clock();
-    this.mixer = new THREE.AnimationMixer( vw.world )
+    this.mixer = new THREE.AnimationMixer( viewer.world )
     this.gui = new dat.GUI();  
     this.track = THREE.AnimationClip.parse(JSON.parse(animation)); 
     this.action = this.mixer.clipAction( this.track );   
@@ -13,6 +14,13 @@ var LoadRobotRecord = function(data) {
     this.action.startAt( this.mixer.time + this.t_d ).fadeIn( this.t_f ).play();
     this.action.paused = true
 
+    var animate = function(){
+        requestAnimationFrame(animate)
+        this.mixer.update(this.clock.getDelta() );
+        this.viewer._dirty = true; // trigger update of urdf-viewer
+        if (this.recording) this.addFrameToGIF()    
+    }.bind(this)
+    animate() 
 }
 
 LoadRobotRecord.prototype._start = function(){
@@ -74,10 +82,6 @@ LoadRobotRecord.prototype.toGIF = function(data){
 
 }
 
-LoadRobotRecord.prototype.updateAnimationClip = function(data) {
-    this.mixer.update(this.clock.getDelta() );
-}
-
 LoadRobotRecord.prototype.addFrameToGIF = function(data) {
     this.gif.addFrame(this.canvas, {delay: this.delay_between_frames, copy: true});
 }
@@ -85,8 +89,6 @@ LoadRobotRecord.prototype.addFrameToGIF = function(data) {
 LoadRobotRecord.prototype.play = function(data) {
     // Play animation in loop
     let control_gui = data.control_gui || false 
-    
-    
     if (control_gui) clipControl( this.gui, this.action, this.mixer, this.track, this.t_f, this.t_d );
     this._start()
 

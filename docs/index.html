@@ -2,34 +2,23 @@
 <html>
     <head>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
-        <title>Play Recorded Robot</title>
-
-        <script src="https://threejs.org/build/three.min.js"></script>
-        <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
-        <script src="https://threejs.org/examples/js/loaders/STLLoader.js"></script>
-        <script src="https://threejs.org/examples/js/loaders/ColladaLoader.js"></script>
-        <script src="https://rawgit.com/dataarts/dat.gui/v0.6.5/build/dat.gui.min.js"></script>
+        <title>Play UR5 Robot</title>
         <script src="https://rawgit.com/webcomponents/webcomponentsjs/v1.1.0/webcomponents-lite.js"></script>
-        <script src="https://rawgit.com/ipa-jfh/urdf-loaders/keyframe_animation/javascript/URDFLoader.js"></script>
-        <script src="https://rawgit.com/gkjohnson/urdf-loaders/70e977b/javascript/urdf-viewer-element.js"></script>
-        <script src="./js/RobotRecordLoader.js"></script>
-
-        <script>customElements.define('urdf-viewer', URDFViewer)</script>
-        <style type="text/css"> html, body, urdf-viewer {height: 100%; width: 100%; overflow: hidden;} </style>
     </head>
 
     <body>
+
         <urdf-viewer 
             id="viewer" up="-Z" display-shadow 
             package="https://raw.githubusercontent.com/ros-industrial/universal_robot/kinetic-devel" 
             urdf="./urdf/ur5.urdf">
-    </urdf-viewer>
+        </urdf-viewer>
 
         <script>
-            const vw = document.querySelector('urdf-viewer')
+            
+        function handleLoad(e) {
             const animation_file = "./recordings/test_move.json"
-            var record
+            const vw = document.querySelector('urdf-viewer')
 
             document.addEventListener('WebComponentsReady', () => {
 
@@ -43,6 +32,7 @@
 
                         // Load recordet robot motion into a Three.js clipAction
                         record = new LoadRobotRecord({
+                            viewer: vw,
                             animation: animation,
                             fading: 3.0, // default = 0.5
                         })
@@ -50,20 +40,17 @@
                         record.play({
                             control_gui: true, // default = false
                         })
-
-                        animate();
-
                     })
                 })
             })
-
-
-            function animate() {
-                requestAnimationFrame(animate)
-                record.updateAnimationClip()
-                vw._dirty = true; // trigger update of urdf-viewer-element
-            }        
+        }
+        function handleError(e) {
+            console.log('Error loading import: ' + e.target.href);
+        }
         </script>
+  
+        <link rel="import" href="https://rawgit.com/ipa-jfh/robot_recorder/master/docs/html_imports/viewer_deps.html"
+                onload="handleLoad(event)" onerror="handleError(event)">
 
     </body>
 </html>
