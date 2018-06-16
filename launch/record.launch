@@ -3,6 +3,7 @@
   <arg name="output_file"    default="$(find robot_recorder)/docs/recordings/test_move.json"/>
   <arg name="throttle_value" default="0.05" />
   <arg name="throttle_hz"    default="10" />
+  <arg name="manual"         default="false" />
 
   <node pkg="topic_tools" type="throttle" name="throttle_joints_by_rate" args="messages joint_states $(arg throttle_hz)"/>
 
@@ -12,7 +13,7 @@
     <remap from="joint_states" to="joint_states_throttle"/>
   </node>
 
-  <node pkg="robot_recorder" type="record_robot" name="record_robot" args="$(arg throttle_hz) $(arg output_file)" output="screen">
+  <node pkg="robot_recorder" type="record_robot" name="record_robot" args="$(arg throttle_hz) $(arg output_file) $(arg manual)" output="screen">
     <remap from="joint_states" to="joint_states_changes"/>
   </node>
 

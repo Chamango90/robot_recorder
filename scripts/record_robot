@@ -12,11 +12,12 @@ if __name__ == '__main__':
         # Using default values
         freq = 10
         output_name = "record.json"
-    elif len(argv) == 3:
-        freq, output_name = argv[1:3]
+        manual = False
+    elif len(argv) == 4:
+        freq, output_name, manual = argv[1:4]
     else:
         print "Wrong usage. Set arguments: frequency output_name"
         sys.exit (1)
 
-    record = Recorder(freq, output_name)
+    record = Recorder(freq, output_name, manual)
     rospy.spin()
