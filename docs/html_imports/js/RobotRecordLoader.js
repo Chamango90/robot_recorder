@@ -25,7 +25,6 @@ var LoadRobotRecord = function(data) {
 
 LoadRobotRecord.prototype._start = function(){
     this.action.paused = false; 
-    this.recording = true;
 }
 
 LoadRobotRecord.prototype.toGIF = function(data){
@@ -63,6 +62,7 @@ LoadRobotRecord.prototype.toGIF = function(data){
     var gifControl = {
         StartRecord : function() {
             this._start()
+            this.recording = true;
             this.action.reset();
             //this.gif.abort()  %TODO not working to reset gif
         }.bind(this),
