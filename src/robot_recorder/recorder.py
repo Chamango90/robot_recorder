@@ -49,11 +49,12 @@ class Recorder(object):
         duration = max(self.last_tf_t, self.last_js_t)
         if self.tracks:
             _tracks = [t.export() for t in self.tracks.itervalues()]
-            if "/" in self.out_name: # If absolute path only use filename
-                animation_name = self.out_name.rsplit('/',1)[1]
-            if "." in animation_name: # Remove the extension
-                animation_name = animation_name.rsplit('.',1)[0]
-            animation = { "duration": duration, "name": animation_name, "tracks": _tracks}
+            _animation_name = self.out_name
+            if "/" in _animation_name: # If absolute path only use filename
+                _animation_name = _animation_name.rsplit('/',1)[1]
+            if "." in _animation_name: # Remove the extension
+                _animation_name = _animation_name.rsplit('.',1)[0]
+            animation = { "duration": duration, "name": _animation_name, "tracks": _tracks}
             rospy.loginfo("\n %s", json.dumps(animation, indent=4, sort_keys=False) )
             with open(self.out_name, "w") as file:
                 file.write( json.dumps(animation) )
