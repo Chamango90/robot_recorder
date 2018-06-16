@@ -2,12 +2,10 @@
 import rospy
 from sensor_msgs.msg import JointState
 from tf.msg import tfMessage
-
-import json
 from urdf_parser_py.urdf import URDF
 from tf import transformations as tfs
-from std_srvs.srv import Empty
-
+from std_srvs.srv import Trigger, TriggerResponse
+import json
 
 class Recorder(object):
 
@@ -20,28 +18,49 @@ class Recorder(object):
     j_types = ["prismatic", "revolute"]
 
     def __init__(self, freq, output_name, manual = False):
-        self.active = self.preconfigured = False
+        self.active = self.preconfigured = self.paused = False
         self.start_t = self.last_js_t = self.last_tf_t = None
         self.tracks = {}
         self.dt = 1/float(freq)
         self.out_name = output_name
 
         if not manual:
-            self.start()
+            self.active = True
+            rospy.loginfo("Robot recorder started !")
             rospy.on_shutdown(self.export_to_file)
         else:
-            rospy.Service('~preconfigure', Empty, self.preconfigure)
-            rospy.Service('~start', Empty, self.start)
-            rospy.Service('~stop', Empty, self.export_to_file)
+            rospy.Service('~preconfigure', Trigger, self.preconfigure_service)
+            rospy.Service('~start', Trigger, self.start_service)
+            rospy.Service('~stop', Trigger, self.stop_service)
+        
+        rospy.Service('~pause', Trigger, self.pause_service)
 
-    def preconfigure(self):
+    def preconfigure_service(self, request):
         self.__start_subscribers()
         self.preconfigured = True
+        return TriggerResponse (True, "Robot recorder preconfigured !")
 
-    def start(self):
+    def start_service(self, request):
         if not self.preconfigured: self.__start_subscribers()
         self.active = True
-        rospy.loginfo("Recording started.")
+        return TriggerResponse (True, "Robot recorder started !")
+
+    def pause_service(self, request):
+        if (self.start_t is not None): 
+            # Pause the time
+            if self.paused: 
+                self.pause_t = rospy.get_rostime()
+                response_msg = "Robot recorder paused !"
+            else: 
+                _paused_t = rospy.get_rostime() - self.pause_t
+                self.start_t += _paused_t.to_sec()
+                response_msg = "Robot recorder unpaused !"
+        self.paused = not self.paused
+        return TriggerResponse (True, response_msg)
+
+    def stop_service(self, request):
+        self.export_to_file()
+        return TriggerResponse (True, "Robot recorder stopped !")
 
     def export_to_file(self):
         self.active = False
@@ -67,7 +86,6 @@ class Recorder(object):
                 self.tracks[n].add_kf(time - self.dt)
 
     def __start_subscribers(self, key='robot_description'):
-
         rospy.Subscriber("tf_changes", tfMessage, self.__tf_cb)
         if rospy.has_param(key):
             rospy.Subscriber("joint_states", JointState, self.__joint_states_cb)
@@ -90,7 +108,7 @@ class Recorder(object):
 
     def __joint_states_cb(self, data):
         # Joint states should yield the robot's joint movements
-        if self.active:
+        if self.active and not self.paused:
             now = data.header.stamp.to_sec()
 
             #INIT
@@ -112,7 +130,7 @@ class Recorder(object):
 
     def __tf_cb(self, data):
         # TF should track the (mobile) robot in relation to the world
-        if self.active:
+        if self.active and not self.paused:
             # By default one tf: map <--> base_link
             for tf in data.transforms:
                 now = tf.header.stamp.to_sec()
