@@ -25,9 +25,8 @@ class Recorder(object):
         self.out_name = output_name
 
         if not manual:
-            self.active = True
-            rospy.loginfo("Robot recorder started !")
             rospy.on_shutdown(self.export_to_file)
+            self.start()
         else:
             rospy.Service('~preconfigure', Trigger, self.preconfigure_service)
             rospy.Service('~start', Trigger, self.start_service)
@@ -35,14 +34,19 @@ class Recorder(object):
         
         rospy.Service('~pause', Trigger, self.pause_service)
 
+    def start(self):
+        if not self.preconfigured: self.__start_subscribers()
+        self.preconfigured = True
+        self.active = True
+        rospy.loginfo("Robot recorder started !")
+
     def preconfigure_service(self, request):
         self.__start_subscribers()
         self.preconfigured = True
         return TriggerResponse (True, "Robot recorder preconfigured !")
 
     def start_service(self, request):
-        if not self.preconfigured: self.__start_subscribers()
-        self.active = True
+        self.start()
         return TriggerResponse (True, "Robot recorder started !")
 
     def pause_service(self, request):
