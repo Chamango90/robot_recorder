@@ -1,9 +1,13 @@
-# Robot Recorder: Offline ROS -> three.js
+# Robot Recorder: Record ROS for web-animation
 
 This package can be used to record the joints and/or the mobile changes of a ROS system as three.js animation.
-The result can e.g. be display in gh-pages. Find an example here: https://ipa-jfh.github.io/robot_recorder/
+The result can e.g. be display in gh-pages. Find example here: 
 
-[![record_1](https://user-images.githubusercontent.com/17281534/40248316-d6fe0c0a-5acf-11e8-9d53-72547f7f4cf2.gif)](https://ipa-jfh.github.io/robot_recorder/)
+[![record_1](https://user-images.githubusercontent.com/17281534/40248316-d6fe0c0a-5acf-11e8-9d53-72547f7f4cf2.gif)](https://ipa-jfh.github.io/robot_recorder/)  
+Live demo: https://ipa-jfh.github.io/robot_recorder/
+
+[![tb3_circle](https://user-images.githubusercontent.com/17281534/41863144-32257e44-78a6-11e8-98d4-2f6269a4cf3e.gif)](https://ipa-jfh.github.io/robot_recorder/tb3_burger)  
+Live demo: https://ipa-jfh.github.io/robot_recorder/tb3_burger
 
 In order to reduce the recorded data it does not apply a fixed rate but keyframes. Furthermore, it will not start before the first movement has occured.
 
@@ -36,7 +40,7 @@ The example [index_to_gif.html][6] shows how to generate a GIF out of the animat
 
 [![record_to_gif](https://user-images.githubusercontent.com/17281534/40250138-a4dc6266-5ad5-11e8-8672-a7fb25e5976d.png)](https://ipa-jfh.github.io/robot_recorder/index_to_gif)
 
-https://ipa-jfh.github.io/robot_recorder/index_to_gif
+Live demo: https://ipa-jfh.github.io/robot_recorder/index_to_gif
 
 ## How is the URDF visualized?
 
