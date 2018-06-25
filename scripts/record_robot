@@ -14,7 +14,8 @@ if __name__ == '__main__':
         output_name = "record.json"
         manual = False
     elif len(argv) == 4:
-        freq, output_name, manual = argv[1:4]
+        freq, output_name = argv[1:3]
+        manual = argv[3].lower() == 'true'
     else:
         print "Wrong usage. Set arguments: frequency output_name"
         sys.exit (1)
