@@ -3,21 +3,9 @@
     <head>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-        <title>Record Recorded Robot to GIF</title>
-
-        <script src="https://threejs.org/build/three.min.js"></script>
-        <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
-        <script src="https://threejs.org/examples/js/loaders/STLLoader.js"></script>
-        <script src="https://threejs.org/examples/js/loaders/ColladaLoader.js"></script>
-        <script src="https://rawgit.com/dataarts/dat.gui/v0.6.5/build/dat.gui.min.js"></script>
+        <title>Record Turtlebot3 Robot to GIF</title> 
         <script src="https://rawgit.com/webcomponents/webcomponentsjs/v1.1.0/webcomponents-lite.js"></script>
-        <script src="https://rawgit.com/ipa-jfh/urdf-loaders/keyframe_animation/javascript/URDFLoader.js"></script>
-        <script src="https://rawgit.com/gkjohnson/urdf-loaders/70e977b/javascript/urdf-viewer-element.js"></script>
-        <script src="./js/RobotRecordLoader.js"></script>
-
         <script src="https://rawgit.com/jnordberg/gif.js/v0.2.0/dist/gif.js"></script>
-
-        <script>customElements.define('urdf-viewer', URDFViewer)</script>
         <style type="text/css"> html, body, urdf-viewer {background-color: LightGrey; height: 600px; width: 860px; overflow: hidden;} </style>
     </head>
 
@@ -25,14 +13,14 @@
         <urdf-viewer 
             id="viewer" up="-Z" display-shadow 
             package="https://raw.githubusercontent.com/ROBOTIS-GIT/turtlebot3/0.2.1"
-            urdf="./urdf/turtlebot3_burger_colored.urdf">
+            urdf="https://rawgit.com/ipa-jfh/robot_recorder/master/docs/urdf/turtlebot3_burger_colored.urdf">
         </urdf-viewer>
 
         <script>
+        function handleLoad(e) {
             const animation_file = "./recordings/tf_test.json"
-            const workerScript = "js/gif.worker.js"
+            const workerScript = "html_imports/js/gif.worker.js"
             const vw = document.querySelector('urdf-viewer')
-            var record   
 
             document.addEventListener('WebComponentsReady', () => {
                 
@@ -48,6 +36,7 @@
 
                         // Load recordet robot motion into a Three.js clipAction
                         record = new LoadRobotRecord({ 
+                            viewer: vw,
                             animation: animation, 
                             fading: 0.0, // default = 0.5
                             delay: 0.0, // default = 0.5
@@ -58,23 +47,21 @@
                             canvas: document.getElementsByTagName("canvas")[0],
                             workers: 2,
                             workerScript: workerScript,
-                            quality: 2, //[1, 10] lower is better
+                            quality: 1, //[1, 10] lower is better
                             auto: false,
                         })
-
-                        animate() 
                     })
                 })
             })
-
-
-            function animate() {
-                requestAnimationFrame(animate)
-                record.updateAnimationClip()
-                vw._dirty = true; // trigger update of urdf-viewer
-                if (record.recording) record.addFrameToGIF()              
-            }        
+        }
+        function handleError(e) {
+            console.log('Error loading import: ' + e.target.href);
+        }
         </script>
+  
+        <link rel="import" href="./html_imports/viewer_deps.html"
+                onload="handleLoad(event)" onerror="handleError(event)">
+
 
     </body>
 </html>
