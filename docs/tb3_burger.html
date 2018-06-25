@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+        <title>Play Turtlebot3 Robot</title>    
+        <script src="https://rawgit.com/webcomponents/webcomponentsjs/v1.1.0/webcomponents-lite.js"></script>
+    </head>
+
+    <body>
+        <urdf-viewer 
+            id="viewer" up="-Z" display-shadow 
+            package="https://raw.githubusercontent.com/ROBOTIS-GIT/turtlebot3/0.2.1"
+            urdf="./urdf/turtlebot3_burger_colored.urdf">
+    </urdf-viewer>
+
+        <script>
+        function handleLoad(e) {
+            const animation_file = "./recordings/tf_test.json"
+            const vw = document.querySelector('urdf-viewer')
+
+            document.addEventListener('WebComponentsReady', () => {
+
+
+                
+                vw.addEventListener('geometry-loaded', e => {
+
+                    vw.camera.fov = 4;
+                    vw.camera.position.y = 3
+                    vw.ambientLight = new THREE.AmbientLight( "#111111" );
+                    vw.camera.updateProjectionMatrix();
+                    vw.refresh()
+
+                    new THREE.FileLoader().load( animation_file, function ( animation ) {
+
+                        // Load recordet robot motion into a Three.js clipAction
+                        record = new LoadRobotRecord({
+                            viewer: vw,
+                            animation: animation,
+                            fading: 0.0, // default = 0.5
+                        })
+                        // Record animation into a GIF
+                        record.play({
+                            control_gui: true, // default = false
+                        })
+
+                    })
+                })
+            })  
+        }
+        function handleError(e) {
+            console.log('Error loading import: ' + e.target.href);
+        }
+        </script>
+  
+        <link rel="import" href="https://rawgit.com/ipa-jfh/robot_recorder/master/docs/html_imports/viewer_deps.html
+                onload="handleLoad(event)" onerror="handleError(event)">
+
+    </body>
+</html>
