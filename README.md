@@ -13,14 +13,27 @@ In order to reduce the recorded data it does not apply a fixed rate but keyframe
 
 ### Usecases
 
-- Show a 3D demo of your ROS robot or application
-- Show the result of CI
+- Show a 3D demo of your ROS robot or application in the browser
+- Show the CI test result(s) of your application
 
 ## How to use?
 
-1. "Automatic mode": By default the node records as soon as it is started and saves data as soon as it is closed. 
 
-1. "Manual mode": Use the ROS services `~start` and `~stop`.
+
+1. "Automatic mode": By default the node records* as soon as it is started and saves data as soon as it is closed.  
+    -> Set arg `manual` to `false` in [record.launch][7]
+
+1. "Manual mode": Control the tool via ROS services.  
+    -> Set arg `manual` to `true` in [record.launch][7]  
+    
+    Available ROS services (private ns `~` is by default `robot_recorder/`):
+    - `~preconfigure` (OPTIONAL): Start ROS subscribers and load `robot_description` param (Requires 2 secs).
+    - `~start`: Preconfigures if not yet done and then starts recording*.
+    - `~pause`: Pause and unpause the recording.
+    - `~stop`: Stops the recording and saves it to the given file path (arg `output_file` in [record.launch][7])  
+    ATTENTION: It will overwrite exiting files!
+    
+*Once the recorder is started it will wait until the robot "moves" (new `tf` or `joint_states` msgs) before it starts the actual recording. Throttling by change (see _What can be recorded?_) is recommended.
 
 ## What can be recorded?
 
@@ -42,9 +55,9 @@ The example [index_to_gif.html][6] shows how to generate a GIF out of the animat
 
 Live demo: https://ipa-jfh.github.io/robot_recorder/index_to_gif
 
-## How is the URDF visualized?
+## How is the URDF visualized in the three.js scene?
 
-With the help of https://github.com/gkjohnson/urdf-loaders
+With the `urdf-loader` tool: https://github.com/gkjohnson/urdf-loaders
 
 [1]: http://wiki.ros.org/tf#change_notifier
 [2]: ./scripts/throttle_joints_by_change
@@ -52,3 +65,4 @@ With the help of https://github.com/gkjohnson/urdf-loaders
 [4]: https://threejs.org/examples/#webgl_animation_keyframes_json
 [5]: https://threejs.org/docs/#manual/introduction/Animation-system
 [6]: ./docs/index_to_gif.html
+[7]: ./robot_recorder_core/launch/record.launch
