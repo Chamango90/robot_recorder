@@ -13,7 +13,7 @@
     <remap from="joint_states" to="joint_states_throttle"/>
   </node>
 
-  <node pkg="robot_recorder" type="record_robot" name="record_robot" args="$(arg throttle_hz) $(arg output_file) $(arg manual)" output="screen">
+  <node pkg="robot_recorder" type="robot_recorder_node" name="robot_recorder" args="$(arg throttle_hz) $(arg output_file) $(arg manual)" output="screen">
     <remap from="joint_states" to="joint_states_changes"/>
   </node>
 
