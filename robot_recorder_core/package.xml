@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>robot_recorder</name>
+  <name>robot_recorder_core</name>
   <version>1.0.0</version>
   <description>Record the joint_states and/or the mobile changes (via tf) of a ROS system as three.js animation</description>
 
