@@ -3,22 +3,25 @@
 This package can be used to record the joints and/or the mobile changes of a ROS system as three.js animation.
 The result can e.g. be display in gh-pages. Find example here: 
 
-[![record_1](https://user-images.githubusercontent.com/17281534/40248316-d6fe0c0a-5acf-11e8-9d53-72547f7f4cf2.gif)](https://ipa-jfh.github.io/robot_recorder/)  
-Live demo: https://ipa-jfh.github.io/robot_recorder/
+## Examples
 
-[![tb3_circle](https://user-images.githubusercontent.com/17281534/41863144-32257e44-78a6-11e8-98d4-2f6269a4cf3e.gif)](https://ipa-jfh.github.io/robot_recorder/tb3_burger)  
-Live demo: https://ipa-jfh.github.io/robot_recorder/tb3_burger
+<a href="https://ipa-jfh.github.io/robot_recorder/">
+    <img src="https://user-images.githubusercontent.com/17281534/40248316-d6fe0c0a-5acf-11e8-9d53-72547f7f4cf2.gif" width="430" height="250">
+</a>
+<a href="https://ipa-jfh.github.io/robot_recorder/tb3_burger">
+    <img src="https://user-images.githubusercontent.com/17281534/41863144-32257e44-78a6-11e8-98d4-2f6269a4cf3e.gif" width="430" height="250">
+</a>
+
+Live demos: [UniversalRobot](https://ipa-jfh.github.io/robot_recorder/), [Turtlebot3](https://ipa-jfh.github.io/robot_recorder/tb3_burger)
 
 In order to reduce the recorded data it does not apply a fixed rate but keyframes. Furthermore, it will not start before the first movement has occured.
 
-### Usecases
+## Usecases
 
 - Show a 3D demo of your ROS robot or application in the browser
 - Show the CI test result(s) of your application
 
 ## How to use?
-
-
 
 1. "Automatic mode": By default the node records* as soon as it is started and saves data as soon as it is closed.  
     -> Set arg `manual` to `false` in [record.launch][7]
