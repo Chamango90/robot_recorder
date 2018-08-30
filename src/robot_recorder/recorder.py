@@ -7,6 +7,9 @@ from tf import transformations as tfs
 from std_srvs.srv import Trigger, TriggerResponse
 import json
 
+def round_list(input_list, ndigits = 4):
+    return [ round(i, ndigits) for i in input_list ] 
+
 class Recorder(object):
 
     """
@@ -171,14 +174,14 @@ class Track(object):
                 q = tfs.quaternion_from_euler(*(joint.origin.rpy + ['rxyz']))
                 def cb(v):
                     q_dyn = tfs.quaternion_about_axis(v, joint.axis)
-                    self.value = tfs.quaternion_multiply(q, q_dyn).tolist()
+                    self.value = round_list( tfs.quaternion_multiply(q, q_dyn).tolist() )
         elif j_type == "prismatic":
             self.name = name + ".position"
             self.type = "vector3"
             if joint:
                 orig = joint.origin.xyz
                 def cb(v):
-                    self.value = [(x + y*v) for x, y in zip(orig, joint.axis)]
+                    self.value = round_list( [(x + y*v) for x, y in zip(orig, joint.axis)] )
         else:
             rospy.loginfo("Joint of type %s not supported!", j_type)
         def pass_value(v): self.value = v
