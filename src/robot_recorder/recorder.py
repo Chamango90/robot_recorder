@@ -107,8 +107,9 @@ class Recorder(object):
                 self.pause_t = rospy.get_rostime()
                 response_msg = self.node + " paused!"
             else: 
-                _paused_t = rospy.get_rostime() - self.pause_t
-                self.start_t += _paused_t.to_sec()
+                if self.start_t != None:
+                    _paused_t = rospy.get_rostime() - self.pause_t
+                    self.start_t += _paused_t.to_sec()
                 response_msg = self.node + " unpaused!"
             self.paused = not self.paused
             return TriggerResponse (True, response_msg)
@@ -129,7 +130,7 @@ class Recorder(object):
             self.__preconfigure()
         self.preconfigured = True
         self.active = True
-        rospy.loginfo(self.node + " started!")
+        rospy.loginfo(self.node + " started! Waiting for robot to move ...")
 
     def __cleanup(self, reset_preconfig=True):
         self.active = self.paused = False
@@ -181,7 +182,7 @@ class Recorder(object):
 
             #INIT
             if not self.js_tracks:
-                rospy.loginfo("Recording joint states from %s", data.name)
+                rospy.loginfo("Robot moved: Recording joint states from %s", data.name)
                 self.start_t = now
                 for name in data.name:
                     joint = self.j_map[name]
@@ -208,7 +209,7 @@ class Recorder(object):
 
                 #INIT
                 if not self.tf_tracks:
-                    rospy.loginfo("Recording tf from %s to %s", tf.header.frame_id, root)
+                    rospy.loginfo("Robot moved: Recording tf from %s to %s", tf.header.frame_id, root)
                     self.start_t = now
                     for ty in self.j_types:
                         self.tracks[root+ty] = Track(root, ty)
