@@ -171,7 +171,8 @@ class Track(object):
             self.name = name + ".quaternion"
             self.type = "quaternion"
             if joint:
-                q = tfs.quaternion_from_euler(*(joint.origin.rpy + ['rxyz']))
+                # quaternion_from_euler(yaw, pitch, roll, 'rzyx')
+                q = tfs.quaternion_from_euler(*(joint.origin.rpy[::-1] + ['rzyx']))
                 def cb(v):
                     q_dyn = tfs.quaternion_about_axis(v, joint.axis)
                     self.value = round_list( tfs.quaternion_multiply(q, q_dyn).tolist() )
