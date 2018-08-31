@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RecordWidget</class>
+ <widget class="QWidget" name="RecordWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>341</width>
+    <height>82</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QPushButton" name="RecordButton">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>101</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Record</string>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/if_play_alt_118620.png</normaloff>icons/if_play_alt_118620.png</iconset>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="PauseButton">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>10</y>
+     <width>101</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Pause</string>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/pause.png</normaloff>icons/pause.png</iconset>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="StopButton">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>10</y>
+     <width>101</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Stop</string>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/stop.png</normaloff>icons/stop.png</iconset>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
