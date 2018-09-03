@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>341</width>
+    <width>431</width>
     <height>30</height>
    </rect>
   </property>
@@ -25,10 +25,6 @@
    <property name="text">
     <string>Record</string>
    </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>icons/if_play_alt_118620.png</normaloff>icons/if_play_alt_118620.png</iconset>
-   </property>
   </widget>
   <widget class="QPushButton" name="PauseButton">
    <property name="enabled">
@@ -45,12 +41,8 @@
    <property name="text">
     <string>Pause</string>
    </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>icons/pause.png</normaloff>icons/pause.png</iconset>
-   </property>
   </widget>
-  <widget class="QPushButton" name="StopButton">
+  <widget class="QPushButton" name="DiscardButton">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -63,11 +55,23 @@
     </rect>
    </property>
    <property name="text">
-    <string>Stop</string>
+    <string>Discard</string>
    </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>icons/stop.png</normaloff>icons/stop.png</iconset>
+  </widget>
+  <widget class="QPushButton" name="SaveButton">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>0</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Save</string>
    </property>
   </widget>
  </widget>

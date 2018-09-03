@@ -1,49 +1,36 @@
 #include "record_panel.h"
 #include "record_widget.h"
-
 #include <QVBoxLayout>
-#include <std_srvs/Trigger.h>
-#include <ros/ros.h>
-
+#include <ros/console.h>
 
 namespace rviz_recorder_buttons {
 
-RecordPanel::RecordPanel( QWidget* parent)
-: rviz::Panel(parent) {
+  RecordPanel::RecordPanel( QWidget* parent)
+  : rviz::Panel(parent) {
   QVBoxLayout* layout = new QVBoxLayout(this);
   widget_ = new RecordWidget();
   layout->addWidget(widget_);
   setLayout(layout);
 
-  parent_ns = "/robot_recorder";
-  connect(widget_, SIGNAL(RecordClicked()), this, SLOT(record_clicked()));
-  connect(widget_, SIGNAL(PauseClicked()), this, SLOT(pause_clicked()));
-  connect(widget_, SIGNAL(StopClicked()), this, SLOT(stop_clicked()));
-}
+  nh_.param<std::string>("/robot_recorder_ns", node_ns, "/robot_recorder");
 
-void RecordPanel::record_clicked()
-{
-	std::string service = parent_ns + "/start";
-    ros::ServiceClient client = nh_.serviceClient<std_srvs::Trigger>(service);
-    std_srvs::Trigger trigger;
-    client.call(trigger);
-}
+  clients = {
+    { start, nh_.serviceClient<std_srvs::Trigger>(node_ns + "/" + start)},
+    { pause, nh_.serviceClient<std_srvs::Trigger>(node_ns + "/" + pause)},
+    { disc,  nh_.serviceClient<std_srvs::Trigger>(node_ns + "/" + disc)},
+    { save,  nh_.serviceClient<std_srvs::Trigger>(node_ns + "/" + save)}
+  };
 
-void RecordPanel::pause_clicked()
-{
-	std::string service = parent_ns + "/pause";
-    ros::ServiceClient client = nh_.serviceClient<std_srvs::Trigger>(service);
-    std_srvs::Trigger trigger;
-    client.call(trigger);
-}
+  connect(widget_, SIGNAL(BtnClicked(std::string)),  this, SLOT(call_srv(std::string)));
+  }
 
-void RecordPanel::stop_clicked()
-{
-	std::string service = parent_ns + "/stop";
-    ros::ServiceClient client = nh_.serviceClient<std_srvs::Trigger>(service);
-    std_srvs::Trigger trigger;
-    client.call(trigger);
-}
+  void RecordPanel::call_srv(std::string action)
+  {   
+    if(!clients[action].call(trigger))
+    {
+      ROS_ERROR_STREAM("Recorder with name " << node_ns << " is not started or ready.");
+    }
+  }
 
 }
 
