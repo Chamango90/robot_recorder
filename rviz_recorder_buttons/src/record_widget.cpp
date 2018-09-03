@@ -11,6 +11,11 @@ RecordWidget::RecordWidget(QWidget *parent) :
     QWidget(parent), ui_(new Ui::RecordWidget)
 {
     ui_->setupUi(this);
+
+    ui_->RecordButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_MediaPlay));
+    ui_->PauseButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_MediaPause));
+    ui_->StopButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_DialogSaveButton));
+
     connect(ui_->RecordButton, SIGNAL(clicked()), this, SLOT(Record_Clicked()));
     connect(ui_->PauseButton, SIGNAL(clicked()), this, SLOT(Pause_Clicked()));
     connect(ui_->StopButton, SIGNAL(clicked()), this, SLOT(Stop_Clicked()));
