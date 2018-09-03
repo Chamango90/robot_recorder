@@ -11,7 +11,7 @@ import json
 def round_list(input_list, ndigits = 4):
     return [ round(i, ndigits) for i in input_list ]
 
-def __tf_2_list(tf, j_type):
+def _tf_2_list(tf, j_type):
     props = ('x', 'y', 'z')
     if j_type == "prismatic":
         tr = tf.transform.translation
@@ -28,7 +28,7 @@ class Track(object):
     The movement can either be rotation(quaternion) or transformation(vector3).
     """
 
-    def __init__(self, name, j_type, joint = None):
+    def _init_(self, name, j_type, joint = None):
         if j_type == "revolute" or j_type == "continuous":
             self.name = name + ".quaternion"
             self.type = "quaternion"
@@ -49,11 +49,11 @@ class Track(object):
             rospy.loginfo("Joint of type %s not supported!", j_type)
 
         def pass_value(v): self.value = v
-        self.__update = cb if joint else pass_value
+        self._update = cb if joint else pass_value
         self.keys = []
 
     def add_value_kf(self, time, value):
-        self.__update(value)
+        self._update(value)
         self.add_kf(time)
 
     def add_kf(self, time):
@@ -73,34 +73,35 @@ class Recorder(object):
     """
     j_types = ["prismatic", "revolute"]
 
-    def __init__(self, freq, output_name, manual = False):
-        self.__cleanup()
+    def _init_(self, freq, output_name, manual = False):
+        self._cleanup()
         self.dt = 1/float(freq)
         self.output_name = output_name
         self.node = "Recorder"
 
         if not manual:
             rospy.on_shutdown(self.export_to_file)
-            self.__start()
+            self._start()
         else:
-            rospy.Service('~preconfigure', Trigger, self.preconfigure_service)
-            rospy.Service('~start', Trigger, self.start_service)
-            rospy.Service('~stop', Trigger, self.stop_service)
+            rospy.Service('~preconfigure', Trigger, self.preconfigure_cb)
+            rospy.Service('~start', Trigger, self.start_cb)
+            rospy.Service('~discard', Trigger, self.stop_cb)
+            rospy.Service('~save', Trigger, lambda _: self.stop_cb(_, save=True))
         
-        rospy.Service('~pause', Trigger, self.pause_service)
+        rospy.Service('~pause', Trigger, self.pause_cb)
 
-    def preconfigure_service(self, request):
-        self.__preconfigure()
+    def preconfigure_cb(self, _):
+        self._preconfigure()
         return TriggerResponse (True, self.node + " preconfigured!")
 
-    def start_service(self, request):
+    def start_cb(self, _):
         if not self.active:
-            self.__start()
+            self._start()
             return TriggerResponse (True, self.node + " started!")
         else:
             return TriggerResponse (False, self.node + " is already started!")
 
-    def pause_service(self, request):
+    def pause_cb(self, _):
         if self.active:
             # Pause the time
             if not self.paused:
@@ -112,27 +113,31 @@ class Recorder(object):
                     self.start_t += _paused_t.to_sec()
                 response_msg = self.node + " unpaused!"
             self.paused = not self.paused
+            rospy.loginfo(response_msg)
             return TriggerResponse (True, response_msg)
         else:
             return TriggerResponse (False, self.node + " is not started!")
 
-    def stop_service(self, request):
+    def stop_cb(self, _, save=False):
+        print save
         if self.active:
-            self.export_to_file()
-            self.__cleanup(reset_preconfig=False)
+            rospy.loginfo(self.node + " stopped!")
+            if save:
+                self.export_to_file()
+            self._cleanup(reset_preconfig=False)
             return TriggerResponse (True, self.node + " stopped!")
         else:
             return TriggerResponse (False, self.node + " is not started!")
 
 
-    def __start(self):
+    def _start(self):
         if not self.preconfigured:
-            self.__preconfigure()
+            self._preconfigure()
         self.preconfigured = True
         self.active = True
         rospy.loginfo(self.node + " started! Waiting for robot to move ...")
 
-    def __cleanup(self, reset_preconfig=True):
+    def _cleanup(self, reset_preconfig=True):
         self.active = self.paused = False
         if reset_preconfig:
             self.preconfigured = False
@@ -159,15 +164,15 @@ class Recorder(object):
         else:
             rospy.loginfo("Nothing to record!")
 
-    def __add_kf_if_pause(self, names, time, last_t):
+    def _add_kf_if_pause(self, names, time, last_t):
         if (time - last_t > 3*self.dt):
             for n in names:
                 self.tracks[n].add_kf(time - self.dt)
 
-    def __preconfigure(self, key='robot_description'):
-        rospy.Subscriber("tf_changes", tfMessage, self.__tf_cb)
+    def _preconfigure(self, key='robot_description'):
+        rospy.Subscriber("tf_changes", tfMessage, self._tf_cb)
         if rospy.has_param(key):
-            rospy.Subscriber("joint_states", JointState, self.__joint_states_cb)
+            rospy.Subscriber("joint_states", JointState, self._joint_states_cb)
             self.j_map = URDF.from_parameter_server(key).joint_map    
             rospy.loginfo("Loading robot description.")     
             rospy.sleep(2.)
@@ -175,7 +180,7 @@ class Recorder(object):
             rospy.logwarn("No robot description found. Joint states will not be recorded.")
         self.preconfigured = True
 
-    def __joint_states_cb(self, data):
+    def _joint_states_cb(self, data):
         # Joint states should yield the robot's joint movements
         if self.active and not self.paused:
             now = data.header.stamp.to_sec()
@@ -192,14 +197,14 @@ class Recorder(object):
             #UPDATE
             time = round(now - self.start_t, 2)
             if self.last_js_t:
-                self.__add_kf_if_pause(data.name, time, self.last_js_t)
+                self._add_kf_if_pause(data.name, time, self.last_js_t)
             for i, name in enumerate(data.name):
                 self.tracks[name].add_value_kf(time, data.position[i])
 
             self.last_js_t = time
 
 
-    def __tf_cb(self, data):
+    def _tf_cb(self, data):
         # TF should track the (mobile) robot in relation to the world
         if self.active and not self.paused:
             # By default one tf: map <--> base_link
@@ -218,8 +223,8 @@ class Recorder(object):
                 #UPDATE
                 time = round(now - self.start_t, 2)
                 if self.last_tf_t:
-                    self.__add_kf_if_pause([root+ty for ty in self.j_types], time, self.last_tf_t)
+                    self._add_kf_if_pause([root+ty for ty in self.j_types], time, self.last_tf_t)
                 for ty in self.j_types:
-                    self.tracks[root+ty].add_value_kf(time, __tf_2_list(tf, ty))
+                    self.tracks[root+ty].add_value_kf(time, _tf_2_list(tf, ty))
 
             self.last_tf_t = time
