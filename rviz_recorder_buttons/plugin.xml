@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<library path="lib/librviz_recorder_buttons">
+  <class type="rviz_recorder_buttons::RecordPanel" base_class_type="rviz::Panel">
+    <description>
+      Rviz recorder plugin panel
+    </description>
+  </class>
+</library>
