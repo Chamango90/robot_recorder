@@ -5,14 +5,12 @@ The result can e.g. be display in gh-pages. Find example here:
 
 ## Examples
 
-## Examples
-
 <a href="https://ipa-jfh.github.io/urdf-animation/application_scan_and_plan/">
     <img src="https://user-images.githubusercontent.com/17281534/46005937-aafba700-c0b6-11e8-9d8f-0148392488f1.gif" width="430" height="250">
     >> 3D animation
 </a>
 <a href="https://ipa-jfh.github.io/urdf-animation/manipulator_ur5/">
-    <img src="https://user-images.githubusercontent.com/17281534/46006694-6a9d2880-c0b8-11e8-9016-dc5c2799cf5c.gif" width="430" height="250">
+    <img src="https://user-images.githubusercontent.com/17281534/46014233-da1e1280-c0ce-11e8-9ae7-96f053421b38.gif" width="430" height="250">
     >> 3D animation
 </a>
 <a href="https://ipa-jfh.github.io/urdf-animation/mobile_robot_turtlebot3/">
@@ -29,7 +27,7 @@ The result can e.g. be display in gh-pages. Find example here:
 
 ## How to use?
 
-In order to reduce the recorded data it does not apply a fixed rate but keyframes. Furthermore, it will not start before the first movement has occured.
+In order to reduce the recorded data it does not apply a fixed rate but keyframes.
 
 1. "Automatic mode": By default the node records* as soon as it is started and saves data as soon as it is closed.  
     -> Set arg `manual` to `false` in [record.launch][7]
@@ -45,6 +43,9 @@ In order to reduce the recorded data it does not apply a fixed rate but keyframe
     ATTENTION: It will overwrite exiting files!
     
 *Once the recorder is started it will wait until the robot "moves" (new `tf` or `joint_states` msgs) before it starts the actual recording. Throttling by change (see _What can be recorded?_) is recommended.
+
+By default the recorded `.json` file will be saved inside the `robot_recorder_core` package.
+
 
 ## What can be recorded?
 

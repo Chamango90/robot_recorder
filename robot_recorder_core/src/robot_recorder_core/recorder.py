@@ -8,7 +8,7 @@ from std_srvs.srv import Trigger, TriggerResponse
 import json
 
 
-def round_list(input_list, ndigits = 4):
+def round_list(input_list, ndigits = 3):
     return [ round(i, ndigits) for i in input_list ]
 
 def _tf_2_list(tf, j_type):
@@ -18,7 +18,7 @@ def _tf_2_list(tf, j_type):
     elif j_type == "revolute":
         tr = tf.transform.rotation
         props += ('w',)
-    return [round(getattr(tr, k), 2) for k in props]
+    return [round(getattr(tr, k), 3) for k in props]
 
 
 class Track(object):
@@ -28,7 +28,7 @@ class Track(object):
     The movement can either be rotation(quaternion) or transformation(vector3).
     """
 
-    def _init_(self, name, j_type, joint = None):
+    def __init__(self, name, j_type, joint = None):
         if j_type == "revolute" or j_type == "continuous":
             self.name = name + ".quaternion"
             self.type = "quaternion"
@@ -73,7 +73,7 @@ class Recorder(object):
     """
     j_types = ["prismatic", "revolute"]
 
-    def _init_(self, freq, output_name, manual = False):
+    def __init__(self, freq, output_name, manual = False):
         self._cleanup()
         self.dt = 1/float(freq)
         self.output_name = output_name
