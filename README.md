@@ -52,15 +52,13 @@ In order to reduce the recorded data it does not apply a fixed rate but keyframe
 
 The recorded robot movements are saved as animation of the `JSON Object format` ([three.js example][4]) which can be utilized by the three.js [animation system][5].
 
-The example [index_to_gif.html][6] shows how to generate a GIF out of the animated three.js stage.
-
-[![record_to_gif](https://user-images.githubusercontent.com/17281534/40250138-a4dc6266-5ad5-11e8-8672-a7fb25e5976d.png)](https://ipa-jfh.github.io/robot_recorder/index_to_gif)
-
-Live demo: https://ipa-jfh.github.io/robot_recorder/index_to_gif
-
 ## How is the URDF visualized in the three.js scene?
 
 With the `urdf-loader` tool: https://github.com/gkjohnson/urdf-loaders
+
+## How to add animations and a GIF converter?
+
+With the `urdf-animation` tool, which wraps the `urdf-loader`: https://github.com/ipa-jfh/urdf-animation
 
 [1]: http://wiki.ros.org/tf#change_notifier
 [2]: ./scripts/throttle_joints_by_change
