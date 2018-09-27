@@ -1,3 +1,8 @@
+## Look at me!
+
+![pr2_look_at_me](https://user-images.githubusercontent.com/17281534/46162254-003ae280-c288-11e8-88eb-b388f0021e71.gif)
+
+
 # Robot Recorder: Record ROS for web-animation
 
 This package can be used to record the joints and/or the mobile changes of a ROS system as three.js animation.
@@ -28,6 +33,9 @@ The result can e.g. be display in gh-pages. Find example here:
 ## How to use?
 
 In order to reduce the recorded data it does not apply a fixed rate but keyframes.
+
+![pr2_keyframes2](https://user-images.githubusercontent.com/17281534/46162357-45f7ab00-c288-11e8-8ab1-ce4ee1552088.gif)
+
 
 1. "Automatic mode": By default the node records* as soon as it is started and saves data as soon as it is closed.  
     -> Set arg `manual` to `false` in [record.launch][7]
