@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="output_file"    default="$(find robot_recorder_core)/recording.json"/>
+  <arg name="output_file"    default="$(find recordit)/recording.json"/>
   <arg name="throttle_value" default="0.05" />
   <arg name="throttle_hz"    default="10" />
   <arg name="manual"         default="true" />
@@ -9,11 +9,11 @@
 
   <node pkg="tf" type="tf_change_notifier" name="tf_to_map_throttle"/>
 
-  <node pkg="robot_recorder_core" type="throttle_joints_by_change" name="throttle_joints_by_change" args="$(arg throttle_value)"  output="screen">
+  <node pkg="recordit" type="throttle_joints_by_change" name="throttle_joints_by_change" args="$(arg throttle_value)"  output="screen">
     <remap from="joint_states" to="joint_states_throttle"/>
   </node>
 
-  <node pkg="robot_recorder_core" type="robot_recorder_node" name="robot_recorder" args="$(arg throttle_hz) $(arg output_file) $(arg manual)" output="screen">
+  <node pkg="recordit" type="robot_recorder_node" name="robot_recorder" args="$(arg throttle_hz) $(arg output_file) $(arg manual)" output="screen">
     <remap from="joint_states" to="joint_states_changes"/>
   </node>
 

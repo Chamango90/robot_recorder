@@ -10,7 +10,8 @@
   <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <run_depend>robot_recorder_core</run_depend>
+  <run_depend>recordit</run_depend>
+  <run_depend>rviz_recorder_buttons</run_depend>
 
   <export>
     <metapackage/>

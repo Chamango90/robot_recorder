@@ -3,7 +3,7 @@
 ![pr2_look_at_me](https://user-images.githubusercontent.com/17281534/46162254-003ae280-c288-11e8-88eb-b388f0021e71.gif)
 
 
-# Robot Recorder: Record ROS for web-animation
+# RobotIt: Record ROS for web-animation
 
 This package can be used to record the joints and/or the mobile changes of a ROS system as three.js animation.
 The result can e.g. be display in gh-pages. Find example here: 
