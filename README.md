@@ -2,27 +2,40 @@
 
 ![pr2_look_at_me](https://user-images.githubusercontent.com/17281534/46162254-003ae280-c288-11e8-88eb-b388f0021e71.gif)
 
+... catch more attention with the tool ...
 
-# RobotIt: Record ROS for web-animation
+<a href="https://ipa-jfh.github.io/urdf-animation/manipulator_ur5/">
+    <img src="https://user-images.githubusercontent.com/17281534/46701301-8f98ac00-cc1f-11e8-8ee1-af82548453d2.gif" width="249" height="211" align="left" >
+</a>
 
-This package can be used to record the joints and/or the mobile changes of a ROS system as three.js animation.
-The result can e.g. be display in gh-pages. Find example here: 
+&nbsp;
 
-## Examples
+# RecordIt
+
+"An animation is worth a thousand lines of markdown."
+
+[>> See 3D animation](https://ipa-jfh.github.io/urdf-animation/manipulator_ur5/)
+
+&nbsp;
+&nbsp;
+
+This package can be used to record a ROS system for the web as a _three.js_ animation. The result can e.g. be displayed in gh-pages or converted to a GIF. 
+
+## Further examples
 
 <a href="https://ipa-jfh.github.io/urdf-animation/application_scan_and_plan/">
     <img src="https://user-images.githubusercontent.com/17281534/46005937-aafba700-c0b6-11e8-9d8f-0148392488f1.gif" width="430" height="250">
-    >> 3D animation
-</a>
-<a href="https://ipa-jfh.github.io/urdf-animation/manipulator_ur5/">
-    <img src="https://user-images.githubusercontent.com/17281534/46014233-da1e1280-c0ce-11e8-9ae7-96f053421b38.gif" width="430" height="250">
-    >> 3D animation
-</a>
-<a href="https://ipa-jfh.github.io/urdf-animation/mobile_robot_turtlebot3/">
-    <img src="https://user-images.githubusercontent.com/17281534/46012246-e30be580-c0c8-11e8-953b-244bf7070d7b.gif" width="430" height="250">
-    >> 3D animation
+<br />
+  >> See 3D animation
 </a>
 
+[>> See source code of application](https://github.com/rosin-project/automatica18_scan_and_plan_demo)
+
+<a href="https://ipa-jfh.github.io/urdf-animation/mobile_robot_turtlebot3/">
+    <img src="https://user-images.githubusercontent.com/17281534/46012246-e30be580-c0c8-11e8-953b-244bf7070d7b.gif" width="430" height="250">
+<br />
+  >> See 3D animation
+</a>
 
 ## Usecases
 
