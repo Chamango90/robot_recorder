@@ -8,17 +8,17 @@ from std_srvs.srv import Trigger, TriggerResponse
 import json
 
 
-def round_list(input_list, ndigits = 3):
-    return [ round(i, ndigits) for i in input_list ]
+def round_list(input_list, digits):
+    return [ round(i, digits) for i in input_list ]
 
-def _tf_2_list(tf, j_type):
+def tf_2_list(tf, j_type, digits):
     props = ('x', 'y', 'z')
     if j_type == "prismatic":
         tr = tf.transform.translation
     elif j_type == "revolute":
         tr = tf.transform.rotation
         props += ('w',)
-    return [round(getattr(tr, k), 3) for k in props]
+    return [round(getattr(tr, k), digits) for k in props]
 
 
 class Track(object):
@@ -28,7 +28,7 @@ class Track(object):
     The movement can either be rotation(quaternion) or transformation(vector3).
     """
 
-    def __init__(self, name, j_type, joint = None):
+    def __init__(self, name, j_type, digits, joint = None):
         if j_type == "revolute" or j_type == "continuous":
             self.name = name + ".quaternion"
             self.type = "quaternion"
@@ -37,14 +37,14 @@ class Track(object):
                 q = tfs.quaternion_from_euler(*(joint.origin.rpy[::-1] + ['rzyx']))
                 def cb(v):
                     q_dyn = tfs.quaternion_about_axis(v, joint.axis)
-                    self.value = round_list( tfs.quaternion_multiply(q, q_dyn).tolist() )
+                    self.value = round_list(tfs.quaternion_multiply(q, q_dyn).tolist(), digits)
         elif j_type == "prismatic":
             self.name = name + ".position"
             self.type = "vector3"
             if joint:
                 orig = joint.origin.xyz
                 def cb(v):
-                    self.value = round_list( [(x + y*v) for x, y in zip(orig, joint.axis)] )
+                    self.value = round_list([(x + y*v) for x, y in zip(orig, joint.axis)], digits)
         else:
             rospy.loginfo("Joint of type %s not supported!", j_type)
 
@@ -73,11 +73,16 @@ class Recorder(object):
     """
     j_types = ["prismatic", "revolute"]
 
-    def __init__(self, freq, output_name, manual = False):
-        self._cleanup()
-        self.dt = 1/float(freq)
-        self.output_name = output_name
+    def __init__(self):
+        manual           = rospy.get_param('~manual', False)
+        self.output_name = rospy.get_param('~output_name', 'record.json')
+        self.timestep    = rospy.get_param('~pause_timestep', 0.1)
+        self.threshhold  = rospy.get_param('~pause_threshold', 3)
+        self.digits      = rospy.get_param('~round_digits', 3)
+
         self.node = "Recorder"
+        self._cleanup()
+        self._parse_name()
 
         if not manual:
             rospy.on_shutdown(self.export_to_file)
@@ -145,18 +150,19 @@ class Recorder(object):
         self.start_t = self.last_js_t = self.last_tf_t = None
         self.tracks = {}
 
+    def _parse_name(self):
+        if "/" in self.output_name: # Use only filename of path
+            _temp_name = self.output_name.rsplit('/',1)[1]
+        if "." in _temp_name: # Remove the extension
+            self.name = _temp_name.rsplit('.',1)[0]
+
     def export_to_file(self):
         self.active = False
         rospy.loginfo("Recording stopped.")
         duration = max(self.last_tf_t, self.last_js_t)
         if self.tracks:
             _tracks = [t.export() for t in self.tracks.itervalues()]
-            _animation_name = self.output_name
-            if "/" in _animation_name: # If absolute path only use filename
-                _animation_name = _animation_name.rsplit('/',1)[1]
-            if "." in _animation_name: # Remove the extension
-                _animation_name = _animation_name.rsplit('.',1)[0]
-            animation = { "duration": duration, "name": _animation_name, "tracks": _tracks}
+            animation = { "duration": duration, "name": self.name, "tracks": _tracks}
             rospy.loginfo("\n %s", json.dumps(animation, indent=4, sort_keys=False) )
             with open(self.output_name, "w") as file:
                 file.write( json.dumps(animation) )
@@ -165,9 +171,9 @@ class Recorder(object):
             rospy.loginfo("Nothing to record!")
 
     def _add_kf_if_pause(self, names, time, last_t):
-        if (time - last_t > 3*self.dt):
+        if (time - last_t > self.threshhold * self.timestep):
             for n in names:
-                self.tracks[n].add_kf(time - self.dt)
+                self.tracks[n].add_kf(time - self.timestep)
 
     def _preconfigure(self, key='robot_description'):
         rospy.Subscriber("tf_changes", tfMessage, self._tf_cb)
@@ -191,7 +197,7 @@ class Recorder(object):
                 self.start_t = now
                 for name in data.name:
                     joint = self.j_map[name]
-                    self.tracks[name] = Track(name, joint.type, joint)
+                    self.tracks[name] = Track(name, joint.type, self.digits, joint)
                 self.js_tracks = True
 
             #UPDATE
@@ -217,7 +223,7 @@ class Recorder(object):
                     rospy.loginfo("Robot moved: Recording tf from %s to %s", tf.header.frame_id, root)
                     self.start_t = now
                     for ty in self.j_types:
-                        self.tracks[root+ty] = Track(root, ty)
+                        self.tracks[root+ty] = Track(root, ty, self.digits)
                     self.tf_tracks = True
 
                 #UPDATE
@@ -225,6 +231,6 @@ class Recorder(object):
                 if self.last_tf_t:
                     self._add_kf_if_pause([root+ty for ty in self.j_types], time, self.last_tf_t)
                 for ty in self.j_types:
-                    self.tracks[root+ty].add_value_kf(time, _tf_2_list(tf, ty))
+                    self.tracks[root+ty].add_value_kf(time, tf_2_list(tf, ty, self.digits))
 
             self.last_tf_t = time

@@ -7,12 +7,22 @@
   <arg name="pause_timestep"  default="0.1" />
   <arg name="pause_threshold" default="3" />
   <arg name="round_digits"    default="3" />
+  <arg name="throttle_value"  default="0.5" />
+  <arg name="polling_frequency"             default="10" />
+  <arg name="translational_update_distance" default="0.02" />
+  <arg name="angular_update_distance"       default="0.02" />
+
+  <node pkg="tf" type="static_transform_publisher" name="static_transform_publisher" args="0 0 0 0 0 0 odom map 1"/>
 
   <node pkg="topic_tools" type="throttle" name="throttle_joints_by_rate" args="messages joint_states $(arg throttle_hz)"/>
 
-  <node pkg="tf" type="tf_change_notifier" name="tf_to_map_throttle"/>
+  <node pkg="tf" type="tf_change_notifier" name="tf_to_map_throttle">
+    <param name="polling_frequency"             type="double" value="$(arg polling_frequency)"/>
+    <param name="translational_update_distance" type="double" value="$(arg translational_update_distance)"/>
+    <param name="angular_update_distance"       type="double" value="$(arg angular_update_distance)"/>
+  </node>
 
- <node pkg="recordit" type="throttle_joints_by_change" name="throttle_joints_by_change">
+  <node pkg="recordit" type="throttle_joints_by_change" name="throttle_joints_by_change">
     <param name="throttle_value" type="double" value="$(arg throttle_value)"/>
     <remap from="joint_states" to="joint_states_throttle"/>
   </node>

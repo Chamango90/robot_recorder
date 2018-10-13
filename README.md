@@ -51,17 +51,18 @@ In order to reduce the recorded data it does not apply a fixed rate but keyframe
 
 
 1. "Automatic mode": By default the node records* as soon as it is started and saves data as soon as it is closed.  
-    -> Set arg `manual` to `false` in [record.launch][7]
+    -> Set param `~manual` to `false`
 
 1. "Manual mode": Control the tool via ROS services.  
-    -> Set arg `manual` to `true` in [record.launch][7]  
+    -> Set param `~manual` to `true`
     
     Available ROS services (private ns `~` is by default `robot_recorder/`):
     - `~preconfigure` (OPTIONAL): Start ROS subscribers and load `robot_description` param (Requires 2 secs).
     - `~start`: Preconfigures if not yet done and then starts recording*.
     - `~pause`: Pause and unpause the recording.
-    - `~stop`: Stops the recording and saves it to the given file path (arg `output_file` in [record.launch][7])  
+    - `~stop`: Stops the recording and saves it to the given file path (param `~output_file`)  
     ATTENTION: It will overwrite exiting files!
+    By default saved in the path `~.ros/` with a timestamped name.
     
 *Once the recorder is started it will wait until the robot "moves" (new `tf` or `joint_states` msgs) before it starts the actual recording. Throttling by change (see _What can be recorded?_) is recommended.
 
