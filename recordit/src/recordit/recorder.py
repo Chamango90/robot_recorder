@@ -1,12 +1,13 @@
 #!/usr/bin/env python
+import json
+import time
+import os
 import rospy
 from sensor_msgs.msg import JointState
 from tf.msg import tfMessage
 from urdf_parser_py.urdf import URDF
 from tf import transformations as tfs
 from std_srvs.srv import Trigger, TriggerResponse
-import json
-
 
 def round_list(input_list, digits):
     return [ round(i, digits) for i in input_list ]
@@ -82,7 +83,6 @@ class Recorder(object):
 
         self.node = "Recorder"
         self._cleanup()
-        self._parse_name()
 
         if not manual:
             rospy.on_shutdown(self.export_to_file)
@@ -150,9 +150,14 @@ class Recorder(object):
         self.start_t = self.last_js_t = self.last_tf_t = None
         self.tracks = {}
 
-    def _parse_name(self):
-        if "/" in self.output_name: # Use only filename of path
-            _temp_name = self.output_name.rsplit('/',1)[1]
+    def _parse_save_path(self):
+        if self.output_name == "":
+            self.output_name = time.strftime("recording-%Y-%m-%d-%H-%M-%S.json")
+        _temp_name = self.output_name
+        if "/" in _temp_name: # Use only filename of path
+            _temp_name = _temp_name.rsplit('/',1)[1]
+        else:
+            self.output_name = os.getcwd()+'/'+self.output_name
         if "." in _temp_name: # Remove the extension
             self.name = _temp_name.rsplit('.',1)[0]
 
@@ -161,6 +166,7 @@ class Recorder(object):
         rospy.loginfo("Recording stopped.")
         duration = max(self.last_tf_t, self.last_js_t)
         if self.tracks:
+            self._parse_save_path()
             _tracks = [t.export() for t in self.tracks.itervalues()]
             animation = { "duration": duration, "name": self.name, "tracks": _tracks}
             rospy.loginfo("\n %s", json.dumps(animation, indent=4, sort_keys=False) )

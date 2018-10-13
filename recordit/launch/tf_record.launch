@@ -1,7 +1,7 @@
 <launch>
 
   <arg name="manual"          default="true" />
-  <arg name="output_name"     default="$(find recordit)/recording.json"/>
+  <arg name="output_name"     default=""/>
   <arg name="throttle_hz"     default="10" />
   <arg name="throttle_value"  default="0.05" />
   <arg name="pause_timestep"  default="0.1" />
