@@ -14,10 +14,12 @@
 
 "An animation is worth a thousand lines of markdown."
 
-[>> See 3D animation](https://ipa-jfh.github.io/urdf-animation/manipulator_ur5/)
+[![Build Status](https://travis-ci.org/ipa-jfh/robot_recorder.svg?branch=master)](https://travis-ci.org/ipa-jfh/robot_recorder)
 
 &nbsp;
 &nbsp;
+
+[>> See 3D animation](https://ipa-jfh.github.io/urdf-animation/manipulator_ur5/)
 
 This package can be used to record a ROS system for the web as a _three.js_ animation. The result can e.g. be displayed in gh-pages or converted to a GIF. 
 
