@@ -63,7 +63,7 @@ In order to reduce the recorded data it does not apply a fixed rate but keyframe
     - `~start`: Preconfigures if not yet done and then starts recording*.
     - `~pause`: Pause and unpause the recording.
     - `~stop`: Stops the recording and saves it to the given file path (param `~output_file`)  
-    ATTENTION: It will overwrite exiting files!
+    ATTENTION: It will overwrite existing files!
     By default saved in the path `~.ros/` with a timestamped name.
     
 *Once the recorder is started it will wait until the robot "moves" (new `tf` or `joint_states` msgs) before it starts the actual recording. Throttling by change (see _What can be recorded?_) is recommended.
