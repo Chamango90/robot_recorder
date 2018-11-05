@@ -15,6 +15,7 @@
 "An animation is worth a thousand lines of markdown."
 
 [![Build Status](https://travis-ci.org/ipa-jfh/robot_recorder.svg?branch=master)](https://travis-ci.org/ipa-jfh/robot_recorder)
+<a href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
 &nbsp;
 

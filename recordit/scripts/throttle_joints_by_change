@@ -2,15 +2,16 @@
 import rospy
 from sensor_msgs.msg import JointState
 
-# Filter joint_states msg, if no joint_value changes more than threshold
-# If one does, publish complete msg
 
-class ThrottleByDistance():
+class ThrottleByDistance:
+    """Filter joint_states msg, if no joint_value changes more than threshold.
+    """
+
     def __init__(self):
         self.old_states = []
-        self.throttle_value = rospy.get_param('~throttle_value', 0.1)
-        self.pub = rospy.Publisher('joint_states_changes', JointState, queue_size=10)
-        rospy.init_node('throttle_by_distance', anonymous=True)
+        self.throttle_value = rospy.get_param("~throttle_value", 0.1)
+        self.pub = rospy.Publisher("joint_states_changes", JointState, queue_size=10)
+        rospy.init_node("throttle_by_distance", anonymous=True)
         rospy.Subscriber("joint_states", JointState, self.callback)
         rospy.spin()
 
@@ -27,8 +28,9 @@ class ThrottleByDistance():
             return self.publish(msg)
 
         for idx, val in enumerate(msg.position):
-            if (abs(self.old_states[idx] - val) > self.throttle_value):
+            if abs(self.old_states[idx] - val) > self.throttle_value:
                 return self.publish(msg)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     throttle = ThrottleByDistance()
