@@ -1,5 +1,14 @@
 matrix:
   include:
+    - sudo: required
+      dist: trusty
+      language: generic
+      env: ROS_DISTRO=kinetic ROS_REPO=ros
+      install:
+        - git clone --depth=1 https://github.com/ros-industrial/industrial_ci.git .ci_config
+      script:
+        - .ci_config/travis.sh
+
     - language: python
       python:
         - "3.6"
@@ -9,14 +18,3 @@ matrix:
         - pre-commit run --all-files
       after_failure:
         - git diff
-
-    - language: generic
-      sudo: required
-      dist: trusty
-      env:
-        matrix:
-          - ROS_DISTRO=kinetic ROS_REPO=ros
-      install:
-        - git clone --depth=1 https://github.com/ros-industrial/industrial_ci.git .ci_config
-      script:
-        - .ci_config/travis.sh
