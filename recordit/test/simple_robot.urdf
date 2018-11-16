@@ -1,0 +1,18 @@
+<robot name="simple_robot">
+    <link name="link1" />
+    <link name="link2" />
+    <link name="link3" />
+
+    <joint name="lin_joint" type="prismatic">
+        <origin rpy="0 0 0" xyz="1 1 0"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="0" lower="-0.2" upper="0.2" velocity="0"/>
+        <parent link="link1"/>
+        <child link="link2"/>
+    </joint>
+
+    <joint name="rot_joint" type="continuous">
+        <parent link="link1"/>
+        <child link="link3"/>
+    </joint>
+</robot>
