@@ -1,0 +1,18 @@
+<launch>
+
+  <arg name="path" default="/tmp/test_recording.json"/>
+  <arg name="pause_threshold" default="0.3"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find recordit)/test/simple_robot.urdf'" />
+
+  <node pkg="recordit" type="recordit" name="robot_recorder" output="screen">
+    <param name="manual" type="bool" value="false"/>
+    <param name="pause_threshold"  type="double"  value="$(arg pause_threshold)"/>
+    <param name="path"  type="str"  value="$(arg path)"/>
+  </node>
+
+  <test pkg="recordit" type="test_recordit.py" test-name="test_recordit">
+    <param name="pause_threshold"  type="double"  value="$(arg pause_threshold)"/>
+    <param name="path"  type="str"  value="$(arg path)"/>
+  </test>
+</launch>

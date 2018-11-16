@@ -1,12 +1,11 @@
 <launch>
 
   <arg name="manual"          default="true" />
-  <arg name="output_name"     default=""/>
+  <arg name="path"            default=""/> <!-- Path to save the recording -->
   <arg name="throttle_hz"     default="10" />
   <arg name="throttle_value"  default="0.05" />
-  <arg name="pause_timestep"  default="0.1" />
-  <arg name="pause_threshold" default="3" />
-  <arg name="round_digits"    default="3" />
+  <arg name="pause_threshold" default="0.3" /> <!-- Extra kf will be added if dt above threshold -->
+  <arg name="round_digits"    default="3" /> <!-- digits to round all recorded values -->
 
   <node pkg="topic_tools" type="throttle" name="throttle_joints_by_rate" args="messages joint_states $(arg throttle_hz)"/>
 
@@ -19,8 +18,7 @@
 
   <node pkg="recordit" type="recordit" name="robot_recorder" output="screen">
     <param name="manual"          type="bool"   value="$(arg manual)"/>
-    <param name="output_name"     type="str"    value="$(arg output_name)"/>
-    <param name="pause_timestep"  type="double" value="$(arg pause_timestep)"/>
+    <param name="path"            type="str"    value="$(arg path)"/>
     <param name="pause_threshold" type="double" value="$(arg pause_threshold)"/>
     <param name="round_digits"    type="int"    value="$(arg round_digits)"/>
     <remap from="joint_states" to="joint_states_changes"/>
