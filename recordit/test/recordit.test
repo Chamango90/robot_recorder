@@ -6,7 +6,7 @@
   <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find recordit)/test/simple_robot.urdf'" />
 
   <node pkg="recordit" type="recordit" name="robot_recorder" output="screen">
-    <param name="manual" type="bool" value="false"/>
+    <param name="manual" type="bool" value="true"/>
     <param name="pause_threshold"  type="double"  value="$(arg pause_threshold)"/>
     <param name="path"  type="str"  value="$(arg path)"/>
   </node>
