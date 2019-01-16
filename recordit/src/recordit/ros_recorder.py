@@ -35,13 +35,14 @@ class ROSRecorder(Recorder):
         self.j_map = None
 
         rospy.Service("~pause", Trigger, resp(self.pause, rospy.get_rostime))
+
         if manual:
-            self.manual_mode(rospy.on_shutdown)
-        else:
             rospy.Service("~preconfigure", Trigger, resp(self.preconfigure))
             rospy.Service("~start", Trigger, resp(self.start))
             rospy.Service("~discard", Trigger, resp(self.stop))
             rospy.Service("~save", Trigger, resp(self.stop, save=True))
+        else:
+            self.auto_mode(on_shutdown=rospy.on_shutdown)
 
     @sm(requ=["UNCONF"], trans="CONF")
     def preconfigure(self, key="robot_description"):

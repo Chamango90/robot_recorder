@@ -58,7 +58,7 @@ class Recorder(object):
         self.tracks = {}
         self.INFO = INFO  # log function
 
-    def manual_mode(self, on_shutdown):
+    def auto_mode(self, on_shutdown):
         on_shutdown(self.export_to_file)
         self.start()
 
