@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="manual"          default="true" />
+  <arg name="manual"          default="false" />
   <arg name="path"            default=""/> <!-- Path to save the recording -->
   <arg name="throttle_hz"     default="10" />
   <arg name="throttle_value"  default="0.05" />
