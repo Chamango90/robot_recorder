@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>robot_recorder</name>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <description>Meta package that contains all essential packages for the robot recorder.</description>
 
   <author email="jonathan.hechtbauer@ipa.fraunhofer.de">Jonathan Hechtbauer</author>

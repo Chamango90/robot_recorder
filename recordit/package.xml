@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>recordit</name>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <description>Record the joint_states and/or the mobile changes (via tf) of a ROS system as three.js animation</description>
 
   <author email="jonathan.hechtbauer@ipa.fraunhofer.de">Jonathan Hechtbauer</author>
