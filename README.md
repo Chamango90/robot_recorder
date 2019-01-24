@@ -4,7 +4,7 @@
 
 ... catch more attention with the tool ...
 
-<a href="https://ipa-jfh.github.io/urdf-animation/manipulator_ur5/">
+<a href="https://ipa-jfh.github.io/urdf-animation/manipulator_ur5/result/">
     <img src="https://user-images.githubusercontent.com/17281534/46701301-8f98ac00-cc1f-11e8-8ee1-af82548453d2.gif" width="249" height="211" align="left" >
 </a>
 
@@ -20,14 +20,14 @@
 
 &nbsp;
 
-[>> See 3D animation](https://ipa-jfh.github.io/urdf-animation/manipulator_ur5/)  
+[>> See 3D animation](https://ipa-jfh.github.io/urdf-animation/manipulator_ur5/result/)
 [>> Get started with the tutorial](https://github.com/ipa-jfh/robot_recorder_tutorial)
 
-This package can be used to record a ROS system for the web as a _three.js_ animation. The result can e.g. be displayed in gh-pages or converted to a GIF. 
+This package can be used to record a ROS system for the web as a _three.js_ animation. The result can e.g. be displayed in gh-pages or converted to a GIF.
 
 ## Further examples
 
-<a href="https://ipa-jfh.github.io/urdf-animation/application_scan_and_plan/">
+<a href="https://ipa-jfh.github.io/urdf-animation/application_scan_and_plan/result/">
     <img src="https://user-images.githubusercontent.com/17281534/46005937-aafba700-c0b6-11e8-9d8f-0148392488f1.gif" width="430" height="250">
 <br />
   >> See 3D animation
@@ -35,7 +35,7 @@ This package can be used to record a ROS system for the web as a _three.js_ anim
 
 [>> See source code of application](https://github.com/rosin-project/automatica18_scan_and_plan_demo)
 
-<a href="https://ipa-jfh.github.io/urdf-animation/mobile_robot_turtlebot3/">
+<a href="https://ipa-jfh.github.io/urdf-animation/mobile_robot_turtlebot3/result/">
     <img src="https://user-images.githubusercontent.com/17281534/46012246-e30be580-c0c8-11e8-953b-244bf7070d7b.gif" width="430" height="250">
 <br />
   >> See 3D animation
@@ -54,20 +54,20 @@ In order to reduce the recorded data it does not apply a fixed rate but keyframe
 ![pr2_keyframes2](https://user-images.githubusercontent.com/17281534/46162357-45f7ab00-c288-11e8-8ab1-ce4ee1552088.gif)
 
 
-1. "Automatic mode": By default the node records* as soon as it is started and saves data as soon as it is closed.  
+1. "Automatic mode": By default the node records* as soon as it is started and saves data as soon as it is closed.
     -> Set param `~manual` to `false`
 
-1. "Manual mode": Control the tool via ROS services.  
+1. "Manual mode": Control the tool via ROS services.
     -> Set param `~manual` to `true`
-    
+
     Available ROS services (private ns `~` is by default `robot_recorder/`):
     - `~preconfigure` (OPTIONAL): Start ROS subscribers and load `robot_description` param (Requires 2 secs).
     - `~start`: Preconfigures if not yet done and then starts recording*.
     - `~pause`: Pause and unpause the recording.
-    - `~stop`: Stops the recording and saves it to the given file path (param `~output_file`)  
+    - `~stop`: Stops the recording and saves it to the given file path (param `~output_file`)
     ATTENTION: It will overwrite existing files!
     By default saved in the path `~.ros/` with a timestamped name.
-    
+
 *Once the recorder is started it will wait until the robot "moves" (new `tf` or `joint_states` msgs) before it starts the actual recording. Throttling by change (see _What can be recorded?_) is recommended.
 
 By default the recorded `.json` file will be saved inside the `robot_recorder_core` package.
@@ -75,14 +75,14 @@ By default the recorded `.json` file will be saved inside the `robot_recorder_co
 
 ## What can be recorded?
 
-1. `/joint_states` 
+1. `/joint_states`
 
     This topic provides the changes of the robot joints and represents the **internal motion** of the robot. It can be throttled by [rate][1] and by [change][2] to reduce the recorded keyframes.
-  
+
 1. `/tf`
 
     This topic should be used to get the **external motion** of the robot with respect to a fixed world/map. It can be throttled by [change][3] to reduce the recorded keyframes. The referenced node considers by default only the tf change between the frames `map` <--> `base_link`.
-  
+
 ## Which output-format is used?
 
 The recorded robot movements are saved as animation of the `JSON Object format` ([three.js example][4]) which can be utilized by the three.js [animation system][5].
